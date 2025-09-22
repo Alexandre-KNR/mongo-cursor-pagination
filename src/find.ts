@@ -85,8 +85,10 @@ export default async function findWithPagination(
     // Required to support native mongodb 3+ and keep the backward compatibility with version 2
     let query;
     if (findMethod === COLLECTION_METHODS.FIND_AS_CURSOR) {
+      // @ts-ignore
       query = collection[findMethod]({ $and: [cursorQuery, params.query] }, params.fields);
     } else {
+      // @ts-ignore
       query = collection[findMethod]({ $and: [cursorQuery, params.query] }).project(params.fields);
     }
 
@@ -100,7 +102,7 @@ export default async function findWithPagination(
     const collation = params.collation || config.COLLATION;
     const collatedQuery = collation && !isCollationNull ? query.collation(collation) : query;
     // Query one more element to see if there's another page.
-    const cursor = collatedQuery.sort($sort).limit(params.limit + 1);
+    const cursor = collatedQuery.sort($sort).limit(params.limit! + 1);
     if (params.hint) cursor.hint(params.hint);
     const results = await cursor.toArray();
 
@@ -109,7 +111,7 @@ export default async function findWithPagination(
 
   // Remove fields that we added to the query (such as paginatedField and _id) that the user didn't ask for.
   if (removePaginatedFieldInResponse && params.paginatedField) {
-    response.results = _.map(response.results, (result) => _.omit(result, params.paginatedField));
+    response.results = _.map(response.results, (result) => _.omit(result, params.paginatedField!));
   }
 
   return response;

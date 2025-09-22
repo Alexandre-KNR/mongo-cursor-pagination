@@ -27,8 +27,8 @@ export default async function sanitizeParams(
     paginatedField: '_id',
   });
 
-  if (params.limit < 1) params.limit = 1;
-  if (params.limit > config.MAX_LIMIT) params.limit = config.MAX_LIMIT;
+  if (params.limit! < 1) params.limit = 1;
+  if (params.limit! > config.MAX_LIMIT) params.limit = config.MAX_LIMIT;
 
   // If the paginated field is not _id, then it might have duplicate values in it. This is bad
   // because then we can't exclusively use it for our range queries (that use $lt and $gt). So
@@ -47,11 +47,11 @@ export default async function sanitizeParams(
       // have to look it up when the paginated field is not _id.
       const doc = await collection.findOne(
         { _id: params.after },
-        { [params.paginatedField]: true, _id: false }
+        { [params.paginatedField!]: true, _id: false }
       );
       if (doc) {
         // Handle usage of dot notation in paginatedField
-        let prop = getPropertyViaDotNotation(params.paginatedField, doc);
+        let prop = getPropertyViaDotNotation(params.paginatedField!, doc);
         if (params.sortCaseInsensitive && typeof prop === 'string') {
           prop = prop.toLowerCase();
         }
@@ -74,11 +74,11 @@ export default async function sanitizeParams(
       // have to look it up when the paginated field is not _id.
       const doc = await collection.findOne(
         { _id: params.before },
-        { [params.paginatedField]: true, _id: false }
+        { [params.paginatedField!]: true, _id: false }
       );
       if (doc) {
         // Handle usage of dot notation in paginatedField
-        let prop = getPropertyViaDotNotation(params.paginatedField, doc);
+        let prop = getPropertyViaDotNotation(params.paginatedField!, doc);
         if (params.sortCaseInsensitive && typeof prop === 'string') {
           prop = prop.toLowerCase();
         }
@@ -99,8 +99,8 @@ export default async function sanitizeParams(
       params.fields
     );
 
-    if (!params.fields[params.paginatedField]) {
-      params.fields[params.paginatedField] = 1;
+    if (!params.fields![params.paginatedField!]) {
+      params.fields![params.paginatedField!] = 1;
     }
   }
 

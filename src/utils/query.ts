@@ -59,7 +59,7 @@ function encodePaginationTokens(
 
   // ----- previous ----------------------------------------------------------
   if (response.previous && isPlainObject(response.previous)) {
-    let previousPaginatedField = objectPath.get(response.previous, params.paginatedField);
+    let previousPaginatedField = objectPath.get(response.previous, params.paginatedField!);
     if (params.sortCaseInsensitive) {
       previousPaginatedField = previousPaginatedField?.toLowerCase?.() ?? '';
     }
@@ -71,7 +71,7 @@ function encodePaginationTokens(
 
   // ----- next --------------------------------------------------------------
   if (response.next && isPlainObject(response.next)) {
-    let nextPaginatedField = objectPath.get(response.next, params.paginatedField);
+    let nextPaginatedField = objectPath.get(response.next, params.paginatedField!);
     if (params.sortCaseInsensitive) {
       nextPaginatedField = nextPaginatedField?.toLowerCase?.() ?? '';
     }

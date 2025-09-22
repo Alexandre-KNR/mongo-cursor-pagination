@@ -70,7 +70,7 @@ export default async function aggregate(
   let aggregationPipeline: Document[];
 
   if (params.sortCaseInsensitive) {
-    aggregationPipeline = params.aggregation.concat([
+    aggregationPipeline = params.aggregation!.concat([
       { $addFields: { __lc: { $toLower: `$${params.paginatedField}` } } },
       { $match },
       { $sort },
@@ -78,7 +78,7 @@ export default async function aggregate(
       { $project: { __lc: 0 } },
     ]);
   } else {
-    aggregationPipeline = params.aggregation.concat([{ $match }, { $sort }, { $limit }]);
+    aggregationPipeline = params.aggregation!.concat([{ $match }, { $sort }, { $limit }]);
   }
 
   // Aggregation options:
@@ -100,6 +100,7 @@ export default async function aggregate(
   // Determine the aggregation method based on the library (native MongoDB or mongoist)
   const aggregateMethod = 'aggregateAsCursor' in collection ? 'aggregateAsCursor' : 'aggregate';
 
+  // @ts-ignore
   const cursor: AggregationCursor<Document> = collection[aggregateMethod](
     aggregationPipeline,
     options

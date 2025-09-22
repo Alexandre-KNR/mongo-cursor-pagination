@@ -30,7 +30,7 @@ export interface SearchResponse<T = Document> {
  *    - `next`: Cursor to continue pagination.
  * @returns A paginated response containing results and a cursor for the next page.
  */
-export default async function search<T = Document>(
+export default async function search<T extends Document = Document>(
   collection: Collection<T>,
   searchString: string,
   params: SearchParams
@@ -74,7 +74,9 @@ export default async function search<T = Document>(
     aggregatePipeline.push({
       $match: {
         $or: [
+          // @ts-ignore
           { score: { $lt: params.next[0] } },
+          // @ts-ignore
           { score: { $eq: params.next[0] }, _id: { $lt: params.next[1] } },
         ],
       },
@@ -86,6 +88,7 @@ export default async function search<T = Document>(
   });
 
   const aggregateMethod = 'aggregateAsCursor' in collection ? 'aggregateAsCursor' : 'aggregate';
+  // @ts-ignore
   const results = await collection[aggregateMethod](aggregatePipeline).toArray();
 
   const fullPageOfResults = results.length === params.limit;
