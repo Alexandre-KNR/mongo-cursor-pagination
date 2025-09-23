@@ -38,6 +38,3 @@ jspm_packages
 
 *.sublime-workspace
 .idea
-
-# Node 6 transpiled code.
-dist/
